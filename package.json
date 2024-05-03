@@ -1,0 +1,43 @@
+{
+  "name": "@appcues/expo-config",
+  "version": "4.0.0-alpha.1",
+  "description": "Expo module to integrate Appcues push notifications",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "expo-module test",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "@appcues/expo-config",
+    "AppcuesExpoConfig"
+  ],
+  "repository": "https://github.com/appcues/appcues-expo-module",
+  "bugs": {
+    "url": "https://github.com/appcues/appcues-expo-module/issues"
+  },
+  "author": "Appcues <mobile@appcues.com> (https://www.appcues.com)",
+  "license": "MIT",
+  "homepage": "https://github.com/appcues/appcues-expo-module#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "^18.0.25",
+    "expo-module-scripts": "^3.4.1",
+    "expo-modules-core": "^1.11.12"
+  },
+  "peerDependencies": {
+    "expo": "*",
+    "react": "*",
+    "react-native": "*"
+  }
+}

@@ -1,0 +1,3 @@
+import AppcuesNotificationService
+
+class NotificationService: AppcuesNotificationServiceExtension {}
