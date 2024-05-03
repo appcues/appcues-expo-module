@@ -65,6 +65,61 @@ Never work directly on `main`. Create a new feature/fix branch, following the co
 
 `fix/my-branch`
 
+## Architectural overview
+
+This expo module contains several parts:
+
+1. A [config plugin](/plugin/) that modifies the native project files to support Appcues push notifications.
+2. An [iOS AppDelegate subscriber](/ios/) to handle iOS push notifications at runtime.
+3. An [Android lifecycle listener](/android/) to handle Android push notifications. This doesn't actually implement any Kotlin code, but the AndroidManifest.xml and build.gradle provide necessary configuration.
+
+## Development workflow
+
+To get started with the project, run `npm install` in the root directory to install the required dependencies for each package:
+
+```sh
+npm install
+```
+
+While developing, you can run the [example app](/example/) to test your changes.
+
+Ensure the plugin build is up to date:
+
+```sh
+npm run build plugin
+```
+
+To generate the native projects for the example app:
+
+```sh
+cd example
+npx expo prebuild --clean
+```
+
+To run the example app on Android:
+
+```sh
+npx expo run:android
+```
+
+To run the example app on iOS:
+
+```sh
+npx expo run:ios
+```
+
+Make sure your code passes TypeScript and ESLint. Run the following to verify:
+
+```sh
+npm run lint plugin
+```
+
+Remember to add tests for your change if possible. Run the unit tests by:
+
+```sh
+npm run test plugin
+```
+
 ### Commit messages
 
 Commit messages should follow the pattern `:emoji: Imperative commit message`. See [How to Write an Imperative Message](https://chris.beams.io/posts/git-commit/#imperative) for a great explanation.
@@ -101,3 +156,11 @@ Commit messages should follow the pattern `:emoji: Imperative commit message`. S
 - Keep in mind that changes to more critical parts of `appcues-expo-module` will be subjected to more review, and may require more testing and proof of its correctness than other changes.
 - The person who starts the discussion should be the person who resolves the discussion.
 - In order to pass review your PR will need approval from at least one maintainer.
+
+## Releasing
+
+You must be a repository admin and member of the Appcues npm organization. From a clean copy of the `main` branch:
+
+```sh
+npm run release 1.0.0
+```
