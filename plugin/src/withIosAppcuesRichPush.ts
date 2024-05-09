@@ -87,22 +87,14 @@ const withAppcuesXcodeProject: ConfigPlugin<ConfigProps> = (config, props) => {
       APPCUES_NSE_TARGET.NAME
     );
 
-    // Add the group to the project group. This makes the files appear in the file explorer in Xcode.
-    // Searching for the nameless group is a proxy for the root group.
-    const groups = xcodeProject.hash.project.objects['PBXGroup'];
-    for (const groupUUID of Object.keys(groups)) {
-      if (
-        typeof groups[groupUUID] === 'object' &&
-        groups[groupUUID].name === undefined
-      ) {
-        xcodeProject.addToPbxGroup(
-          appcuesNotificationServiceGroup.uuid,
-          groupUUID
-        );
-        // There should only be a single nameless group, but break anyways just to be sure it's not added twice.
-        break;
-      }
-    }
+    // Add the group to the main group. This makes the files appear in the file explorer in Xcode.
+    const mainGroupUUID =
+      xcodeProject.pbxProjectSection()[xcodeProject.getFirstProject().uuid]
+        .mainGroup;
+    xcodeProject.addToPbxGroup(
+      appcuesNotificationServiceGroup.uuid,
+      mainGroupUUID
+    );
 
     // Add a target for the extension.
     const targetBundleId = `${config.ios?.bundleIdentifier}.${APPCUES_NSE_TARGET.NAME}`;
