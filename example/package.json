@@ -10,14 +10,14 @@
   },
   "dependencies": {
     "@appcues/react-native": "4.0.0-alpha.1",
-    "expo": "~50.0.17",
+    "expo": "~51.0.6",
     "react": "18.2.0",
-    "react-native": "0.73.6"
+    "react-native": "0.74.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
-    "typescript": "^5.1.3"
+    "typescript": "~5.3.3"
   },
   "private": true,
   "expo": {
