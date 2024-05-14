@@ -5,19 +5,18 @@ import {
 } from 'expo/config-plugins';
 import fs from 'fs';
 
+import {
+  APPCUES_NSE_TARGET,
+  BUNDLE_SHORT_VERSION_TEMPLATE_REGEX,
+  BUNDLE_VERSION_TEMPLATE_REGEX,
+  DEFAULT_BUNDLE_SHORT_VERSION,
+  DEFAULT_BUNDLE_VERSION,
+  PODFILE_SNIPPET,
+} from './iosConstants';
 import { ConfigProps } from './types';
 
-const APPCUES_NSE_TARGET = {
-  NAME: 'AppcuesNotificationServiceExtension',
-  // https://github.com/apache/cordova-node-xcode/blob/5158ec512d7ebd57c6fd62dbbcc4ce18c79a8ef6/lib/pbxProject.js#L1742
-  TYPE: 'app_extension',
-  SOURCE_PATH: __dirname + '/../ios/NotificationServiceExtension',
-  POD_NAME: 'AppcuesNotificationService',
-};
-
-// Update the podfile with the Notification Service Extension target.
 // Add the Notification Service Extension files to the expected path.
-const withAppcuesDangerousMod: ConfigPlugin<ConfigProps> = (config, props) => {
+const withAppcuesFiles: ConfigPlugin<ConfigProps> = (config, props) => {
   if (props.enableIosRichPush === false) {
     return config;
   }
@@ -27,7 +26,6 @@ const withAppcuesDangerousMod: ConfigPlugin<ConfigProps> = (config, props) => {
     (config) => {
       const projectRoot = config.modRequest.projectRoot;
 
-      // Copy extension files to project path.
       const destinationPath = `${projectRoot}/ios/${APPCUES_NSE_TARGET.NAME}`;
       if (!fs.existsSync(destinationPath)) {
         fs.mkdirSync(destinationPath);
@@ -35,22 +33,50 @@ const withAppcuesDangerousMod: ConfigPlugin<ConfigProps> = (config, props) => {
 
       const sourceFiles = fs.readdirSync(APPCUES_NSE_TARGET.SOURCE_PATH);
       for (const file of sourceFiles) {
-        fs.copyFileSync(
-          `${APPCUES_NSE_TARGET.SOURCE_PATH}/${file}`,
-          `${destinationPath}/${file}`
-        );
+        if (file.endsWith('-Info.plist')) {
+          // Set Info.plist version numbers to match
+          let plistFile = fs.readFileSync(
+            `${APPCUES_NSE_TARGET.SOURCE_PATH}/${file}`,
+            'utf8'
+          );
+          plistFile = plistFile.replace(
+            BUNDLE_VERSION_TEMPLATE_REGEX,
+            config.ios?.buildNumber ?? DEFAULT_BUNDLE_VERSION
+          );
+          plistFile = plistFile.replace(
+            BUNDLE_SHORT_VERSION_TEMPLATE_REGEX,
+            config.version ?? DEFAULT_BUNDLE_SHORT_VERSION
+          );
+          fs.writeFileSync(`${destinationPath}/${file}`, plistFile);
+        } else {
+          fs.copyFileSync(
+            `${APPCUES_NSE_TARGET.SOURCE_PATH}/${file}`,
+            `${destinationPath}/${file}`
+          );
+        }
       }
+
+      return config;
+    },
+  ]);
+};
+
+// Update the podfile with the Notification Service Extension target.
+const withAppcuesPodfile: ConfigPlugin<ConfigProps> = (config, props) => {
+  if (props.enableIosRichPush === false) {
+    return config;
+  }
+
+  return withDangerousMod(config, [
+    'ios',
+    (config) => {
+      const projectRoot = config.modRequest.projectRoot;
 
       // Add Podfile dependency.
       const podfilePath = `${projectRoot}/ios/Podfile`;
       const podfile = fs.readFileSync(podfilePath);
       if (!podfile.includes(APPCUES_NSE_TARGET.POD_NAME)) {
-        const notificationServiceTarget = `
-          target '${APPCUES_NSE_TARGET.NAME}' do
-            pod '${APPCUES_NSE_TARGET.POD_NAME}', '4.0.0-alpha.1'
-          end
-        `;
-        fs.appendFileSync(podfilePath, notificationServiceTarget);
+        fs.appendFileSync(podfilePath, PODFILE_SNIPPET);
       }
 
       return config;
@@ -126,6 +152,7 @@ export const withIosAppcuesRichPush: ConfigPlugin<ConfigProps> = (
   props
 ) => {
   config = withAppcuesXcodeProject(config, props);
-  config = withAppcuesDangerousMod(config, props);
+  config = withAppcuesFiles(config, props);
+  config = withAppcuesPodfile(config, props);
   return config;
 };
