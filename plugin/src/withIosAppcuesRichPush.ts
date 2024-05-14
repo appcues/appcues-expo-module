@@ -5,6 +5,7 @@ import {
 } from 'expo/config-plugins';
 import fs from 'fs';
 
+import { safeSet } from './helpers';
 import {
   APPCUES_NSE_TARGET,
   BUNDLE_SHORT_VERSION_TEMPLATE_REGEX,
@@ -139,12 +140,53 @@ const withAppcuesXcodeProject: ConfigPlugin<ConfigProps> = (config, props) => {
       target.uuid
     );
 
+    const quotedTargetName = `"${APPCUES_NSE_TARGET.NAME}"`;
+
     // Fix "Value for SWIFT_VERSION cannot be empty."
     const swiftVersion = xcodeProject.getBuildProperty('SWIFT_VERSION');
-    xcodeProject.addBuildProperty('SWIFT_VERSION', swiftVersion);
+    xcodeProject.updateBuildProperty(
+      'SWIFT_VERSION',
+      swiftVersion,
+      null, // want both Debug and Release, so don't specify either
+      quotedTargetName
+    );
+
+    // Set Automatic code signing.
+    xcodeProject.updateBuildProperty(
+      'CODE_SIGN_STYLE',
+      'Automatic',
+      null, // want both Debug and Release, so don't specify either
+      quotedTargetName
+    );
 
     return config;
   });
+};
+
+const withEasTargets: ConfigPlugin<ConfigProps> = (config, props) => {
+  if (!config.ios?.bundleIdentifier) {
+    throw new Error(`Missing 'ios.bundleIdentifier' in app config.`);
+  }
+
+  safeSet(config, 'extra.eas.build.experimental.ios.appExtensions', []);
+
+  const index =
+    config.extra!.eas.build.experimental.ios.appExtensions.findIndex(
+      (ext: any) => ext.targetName === APPCUES_NSE_TARGET.NAME
+    );
+
+  const extConfig = {
+    targetName: APPCUES_NSE_TARGET.NAME,
+    bundleIdentifier: `${config?.ios?.bundleIdentifier}.${APPCUES_NSE_TARGET.NAME}`,
+  };
+
+  if (index > -1) {
+    config.extra!.eas.build.experimental.ios.appExtensions[index] = extConfig;
+  } else {
+    config.extra!.eas.build.experimental.ios.appExtensions.push(extConfig);
+  }
+
+  return config;
 };
 
 export const withIosAppcuesRichPush: ConfigPlugin<ConfigProps> = (
@@ -154,5 +196,6 @@ export const withIosAppcuesRichPush: ConfigPlugin<ConfigProps> = (
   config = withAppcuesXcodeProject(config, props);
   config = withAppcuesFiles(config, props);
   config = withAppcuesPodfile(config, props);
+  config = withEasTargets(config, props);
   return config;
 };
