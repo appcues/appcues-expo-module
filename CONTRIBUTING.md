@@ -93,6 +93,7 @@ To generate the native projects for the example app:
 
 ```sh
 cd example
+npm install
 npx expo prebuild --clean
 ```
 
