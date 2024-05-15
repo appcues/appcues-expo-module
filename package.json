@@ -2,8 +2,8 @@
   "name": "@appcues/expo-config",
   "version": "4.0.0-alpha.4",
   "description": "Expo module to integrate Appcues push notifications",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "plugin/build/index.js",
+  "types": "plugin/build/index.d.ts",
   "scripts": {
     "build": "expo-module build",
     "clean": "expo-module clean",
