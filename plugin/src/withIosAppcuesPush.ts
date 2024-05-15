@@ -206,7 +206,7 @@ const withEasTargets: ConfigPlugin<ConfigProps> = (config, props) => {
   return config;
 };
 
-export const withIosAppcuesRichPush: ConfigPlugin<ConfigProps> = (
+export const withIosAppcuesPush: ConfigPlugin<ConfigProps> = (
   config,
   props
 ) => {
