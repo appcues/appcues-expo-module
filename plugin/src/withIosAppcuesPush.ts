@@ -1,6 +1,7 @@
 import {
   ConfigPlugin,
   withDangerousMod,
+  withEntitlementsPlist,
   withXcodeProject,
 } from 'expo/config-plugins';
 import fs from 'fs';
@@ -15,6 +16,18 @@ import {
   PODFILE_SNIPPET,
 } from './iosConstants';
 import { ConfigProps } from './types';
+
+// Ensure aps-environment entitlement is set.
+export const withEntitlements: ConfigPlugin<ConfigProps> = (config, props) => {
+  config = withEntitlementsPlist(config, (config) => {
+    // Value is automatically set to `production` by Xcode for production builds.
+    config.modResults['aps-environment'] =
+      config.modResults['aps-environment'] ?? 'development';
+    return config;
+  });
+
+  return config;
+};
 
 // Add the Notification Service Extension files to the expected path.
 const withAppcuesFiles: ConfigPlugin<ConfigProps> = (config, props) => {
@@ -164,6 +177,10 @@ const withAppcuesXcodeProject: ConfigPlugin<ConfigProps> = (config, props) => {
 };
 
 const withEasTargets: ConfigPlugin<ConfigProps> = (config, props) => {
+  if (props.enableIosRichPush === false) {
+    return config;
+  }
+
   if (!config.ios?.bundleIdentifier) {
     throw new Error(`Missing 'ios.bundleIdentifier' in app config.`);
   }
@@ -193,6 +210,10 @@ export const withIosAppcuesRichPush: ConfigPlugin<ConfigProps> = (
   config,
   props
 ) => {
+  // General push config.
+  config = withEntitlements(config, props);
+
+  // Rich push config.
   config = withAppcuesXcodeProject(config, props);
   config = withAppcuesFiles(config, props);
   config = withAppcuesPodfile(config, props);
