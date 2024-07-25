@@ -6,15 +6,15 @@ Appcues Expo Module allows you to integrate Appcues push notifications into your
 
 - [Appcues Expo Module](#appcues-expo-module)
   - [🚀 Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Usage](#usage)
+    - [Prerequisites](#prerequisites)
+    - [Usage](#usage)
   - [🎬 Examples](#-examples)
   - [👷 Contributing](#-contributing)
   - [📄 License](#-license)
 
 ## 🚀 Getting Started
 
-## Prerequisites
+### Prerequisites
 
 1. Ensure the [Appcues React Native Module](https://github.com/appcues/appcues-react-native-module) is installed in your app and the SDK is initialized:
     ```js
@@ -38,7 +38,7 @@ Appcues Expo Module allows you to integrate Appcues push notifications into your
     ```
     Note that Appcues iOS push notifications do not use Firebase.
 
-## Usage
+### Usage
 
 1. Install the Appcues expo config plugin
    ```sh
