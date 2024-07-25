@@ -9,10 +9,10 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@appcues/react-native": "4.0.0-alpha.1",
-    "expo": "~51.0.6",
+    "@appcues/react-native": "4.0.0-beta.1",
+    "expo": "~51.0.22",
     "react": "18.2.0",
-    "react-native": "0.74.1"
+    "react-native": "0.74.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
