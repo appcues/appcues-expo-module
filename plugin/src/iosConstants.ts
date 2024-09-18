@@ -8,7 +8,7 @@ export const APPCUES_NSE_TARGET = {
 
 export const PODFILE_SNIPPET = `
 target '${APPCUES_NSE_TARGET.NAME}' do
-  pod '${APPCUES_NSE_TARGET.POD_NAME}', '4.0.0-alpha.1'
+  pod '${APPCUES_NSE_TARGET.POD_NAME}', '4.0.0'
 end
 `;
 
