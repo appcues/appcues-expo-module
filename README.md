@@ -1,7 +1,5 @@
 # Appcues Expo Module
 
-> **This is a pre-release alpha package in preparation for v4 of the Appcues SDK. It is not necessary for integrating v3 of the Appcues SDK. Please refer to the [Appcues React Native Module](https://github.com/appcues/appcues-react-native-module).**
-
 Appcues Expo Module allows you to integrate Appcues push notifications into your Expo app alongside the [Appcues React Native Module](https://github.com/appcues/appcues-react-native-module).
 
 - [Appcues Expo Module](#appcues-expo-module)
