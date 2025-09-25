@@ -90,6 +90,6 @@ dependencies {
   implementation project(':expo-modules-core')
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${getKotlinVersion()}"
 
-  implementation "com.appcues:appcues:4.0.0"
+  implementation "com.appcues:appcues:5.0.0"
 
 }

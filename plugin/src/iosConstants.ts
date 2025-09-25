@@ -9,7 +9,7 @@ export const APPCUES_NSE_TARGET = {
 export const PODFILE_SNIPPET = `
 target '${APPCUES_NSE_TARGET.NAME}' do
   use_frameworks! :linkage => podfile_properties['ios.useFrameworks'].to_sym if podfile_properties['ios.useFrameworks']
-  pod '${APPCUES_NSE_TARGET.POD_NAME}', '4.0.0'
+  pod '${APPCUES_NSE_TARGET.POD_NAME}', '5.0.0'
 end
 `;
 
