@@ -16,7 +16,6 @@ buildscript {
   def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
   if (expoModulesCorePlugin.exists()) {
     apply from: expoModulesCorePlugin
-    applyKotlinExpoModulesCorePlugin()
   }
 
   // Simple helper that allows the root project to override versions declared by this library.
@@ -40,6 +39,14 @@ buildscript {
   dependencies {
     classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${getKotlinVersion()}")
   }
+}
+
+// After com.android.library (buildscript always runs first). The helper
+// try/catches apply kotlin-android, so it no-ops when AGP already registered
+// the kotlin extension. Do not key off android.builtInKotlin — AGP 9 default
+// is unset+on, and AGP 10 removes the property.
+if (ext.has('applyKotlinExpoModulesCorePlugin')) {
+  applyKotlinExpoModulesCorePlugin()
 }
 
 afterEvaluate {
